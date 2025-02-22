@@ -58,8 +58,24 @@ app.get("/messages", async(req,res)=> {
         console.log(error)
     }
 })
-
-
+app.get("/users", async(req, res)=> {
+    try{
+        const allUsers = await users.find()
+        res.status(200).json({allUsers})
+    } catch(error){
+        res.status(500).json({message:"unable to find users"})
+        console.log(error)
+    }
+})
+app.get("/searchuser", async(req, res)=> {
+    try{
+        const {name} = req.query
+        const searchUsers = await users.find({name: {$regex: name, $options: "i"}})
+        res.json(searchUsers)
+    }catch(error){
+        res.status(500).json({message:"unable to find the user by search"})
+    }
+})
 
 app.listen(3000, () => {
     console.log("Backend port is connected");
