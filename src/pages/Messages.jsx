@@ -1,5 +1,6 @@
 import React, { useState, useEffect} from 'react'
 import '../pages/Messages.css'
+import { useNavigate } from 'react-router-dom'
 
 const Messages = () => {
   const [message, setMessage] = useState('')
@@ -10,6 +11,7 @@ const Messages = () => {
   const [UsersList, setUserList] = useState([])
   const [searchName, setSearchName] = useState('')
   const [thisIsTheSearchName, setThisIsTheSearchName] = useState([])
+  const navigate = useNavigate()
 
   const handleSubmitMessages = async () => {
     console.log({message})
@@ -54,6 +56,7 @@ const Messages = () => {
       const data = await response.json()
       setThisIsTheSearchName(data)
       console.log("search name:", data)
+      setSearchName('')
     } catch(error){
       console.log(error)
     }
@@ -96,6 +99,7 @@ const Messages = () => {
   }, [isOpen2])
   return (
     <div>
+      <button onClick={() => navigate('/names')}>psql</button>
       <h1>עמוד הודעות</h1>
       <input id="messages" placeholder='הכנס את ההודעה' value={message} onChange={(e)=> setMessage(e.target.value)}></input>
       <button id="submit" onClick={handleSubmitMessages}>שלח הודעה</button>

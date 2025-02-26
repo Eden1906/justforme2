@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors"
 import db from "./mongodb.js"; 
+import pool from './psql.js'
 
 const {users} = db
 const {messages} = db
@@ -75,6 +76,28 @@ app.get("/searchuser", async(req, res)=> {
     }catch(error){
         res.status(500).json({message:"unable to find the user by search"})
     }
+})
+
+app.post("/addNames", async (req, res) => {
+    const {name} = req.body
+    if(!name){
+        return res.status(400).json({error:"name is required"})
+    }
+    try{
+        const result= await pool.query('INSERT INTO people (name) VALUES ($1) RETURNING *', [name])
+        res.status(201).json(result.rows[0])
+    } catch (error) {
+        console.log(error)
+    }
+})
+app.get("/findNames", async(req, res)=> {
+    try{
+        const result = await pool.query('SELECT * FROM people')
+        res.status(201).json(result)
+    } catch(error){
+        console.error(error)
+    }
+
 })
 
 app.listen(3000, () => {
